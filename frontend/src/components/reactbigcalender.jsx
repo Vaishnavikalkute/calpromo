@@ -1,28 +1,47 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
-import events from "../events";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
 moment.locale("en-GB");
+// CALENDER CONFIGURATION
 const localizer = momentLocalizer(moment);
 
 export default function ReactBigCalendar() {
-  const [eventsData, setEventsData] = useState(events);
+  // Store the calender events in the state
+  const [eventsData, setEventsData] = useState([]);
+
+  // save the event in the local store
+  const saveToLocalStorage=(events)=>{
+    localStorage.setItem("calenderEvents",JSON.stringify(events))
+  }
+
+  const getLocalStorage=()=>{
+    const StoredEvents=localStorage.getItem("calenderEvents");
+    if (StoredEvents){
+      setEventsData(JSON.parse(StoredEvents));
+    }
+  }
+
+  // initializing the state with the event data on mount
+  useEffect(()=>{
+    getLocalStorage()
+  },[])
 
   const handleSelect = ({ start, end }) => {
-    console.log(start);
-    console.log(end);
     const title = window.prompt("New Event name");
-    if (title)
-      setEventsData([
-        ...eventsData,
-        {
-          start,
-          end,
-          title
-        }
-      ]);
+    if (title){
+      const newEvent = {
+        id: Date.now(), // Ensure a unique ID
+        title,
+        start,
+        end
+      };
+      const updateEvent=[...eventsData,newEvent]
+      setEventsData(updateEvent);
+      saveToLocalStorage(updateEvent);
+    }
+     
   };
   return (
     <div className="App">
