@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import {getData,saveData} from "../api_helper.js"
 
+getData()
 moment.locale("en-GB");
 // CALENDER CONFIGURATION
 const localizer = momentLocalizer(moment);
@@ -11,9 +13,11 @@ export default function ReactBigCalendar() {
   // Store the calender events in the state
   const [eventsData, setEventsData] = useState([]);
 
+
   // save the event in the local store
   const saveToLocalStorage=(events)=>{
     localStorage.setItem("calenderEvents",JSON.stringify(events))
+    
   }
 
   const getLocalStorage=()=>{
@@ -29,16 +33,17 @@ export default function ReactBigCalendar() {
   },[])
 
   const handleSelect = ({ start, end }) => {
-    const title = window.prompt("New Event name");
-    if (title){
+    const EventName = window.prompt("New Event name");
+    if (EventName){
       const newEvent = {
         id: Date.now(), // Ensure a unique ID
-        title,
+        EventName,
         start,
         end
       };
       const updateEvent=[...eventsData,newEvent]
       setEventsData(updateEvent);
+      saveData(newEvent)
       saveToLocalStorage(updateEvent);
     }
      
@@ -53,7 +58,7 @@ export default function ReactBigCalendar() {
         defaultView="month"
         events={eventsData}
         style={{ height: "100vh" }}
-        onSelectEvent={(event) => alert(event.title)}
+        onSelectEvent={(event) => alert(event.EventName)}
         onSelectSlot={handleSelect}
       />
     </div>
