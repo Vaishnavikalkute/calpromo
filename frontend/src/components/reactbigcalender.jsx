@@ -4,7 +4,6 @@ import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import {getData,saveData} from "../api_helper.js"
 
-getData()
 moment.locale("en-GB");
 // CALENDER CONFIGURATION
 const localizer = momentLocalizer(moment);
@@ -20,24 +19,32 @@ export default function ReactBigCalendar() {
     
   }
 
-  const getLocalStorage=()=>{
+  const getLocalStorage=async()=>{
     const StoredEvents=localStorage.getItem("calenderEvents");
     if (StoredEvents){
       setEventsData(JSON.parse(StoredEvents));
+    }
+    else{
+      // if event data is not there get it from mongo and the alse save it in local store
+      const fetchedata= await getData()
+      setEventsData(fetchedata["data"])
+      saveToLocalStorage(fetchedata["data"])
+
     }
   }
 
   // initializing the state with the event data on mount
   useEffect(()=>{
+    // getData()
     getLocalStorage()
   },[])
 
   const handleSelect = ({ start, end }) => {
-    const EventName = window.prompt("New Event name");
-    if (EventName){
+    const title = window.prompt("New Event name");
+    if (title){
       const newEvent = {
         id: Date.now(), // Ensure a unique ID
-        EventName,
+        title,
         start,
         end
       };
@@ -58,7 +65,7 @@ export default function ReactBigCalendar() {
         defaultView="month"
         events={eventsData}
         style={{ height: "100vh" }}
-        onSelectEvent={(event) => alert(event.EventName)}
+        onSelectEvent={(event) => alert(event.title)}
         onSelectSlot={handleSelect}
       />
     </div>
