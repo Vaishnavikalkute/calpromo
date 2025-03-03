@@ -2,10 +2,14 @@ import axios from "axios";
 
 const API_URL = "http://localhost:5000";
 
-export const saveData = async (data) => {
+export const saveData = async (eventData) => {
   try {
-    console.log("iamdatd",data)
-    const response = await axios.post(`${API_URL}/save`, data);
+    const formattedEvent = {
+      title: eventData.title,
+      start: new Date(eventData.start).toISOString(), // Convert to ISO 8601
+      end: new Date(eventData.end).toISOString()
+    };
+    const response = await axios.post(`${API_URL}/save`, formattedEvent);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -15,9 +19,9 @@ export const saveData = async (data) => {
 
 export const getData = async () => {
   try {
-    console.log("I WORK")
+
     const response = await axios.get(`${API_URL}/data`);
-    console.log(response)
+
 
     return response.data;
   } catch (error) {

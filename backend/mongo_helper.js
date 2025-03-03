@@ -2,9 +2,9 @@ const mongoose = require("mongoose");
 
 const DataSchema = new mongoose.Schema({
   id: String, // Ensure a unique ID
-  EventName:String,
-  start:String,
-  end:String,
+  title: { type: String, required: true },
+  start: { type: Date, required: true },
+  end: { type: Date, required: true }
 
 });
 
@@ -14,7 +14,6 @@ const saveData = async (data) => {
   try {
     const newData = new Data(data);
     await newData.save();
-    console.log(newData)
     return { success: true, message: "Data saved!" };
   } catch (error) {
     return { success: false, error };

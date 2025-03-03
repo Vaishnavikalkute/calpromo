@@ -14,7 +14,6 @@ mongoose.connect(process.env.MONGO_URI)
   .catch(err => console.error("❌ MongoDB Connection Error:", err));
 
 app.post("/save", async (req, res) => {
-    console.log(req,res)
   const result = await saveData(req.body);
   res.status(result.success ? 201 : 500).send(result);
 });
