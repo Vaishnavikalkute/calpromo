@@ -23,6 +23,7 @@ export default function ReactBigCalendar() {
     const StoredEvents=localStorage.getItem("calenderEvents");
     if (StoredEvents){
       setEventsData(JSON.parse(StoredEvents));
+      console.log(StoredEvents)
     }
     else{
       // if event data is not there get it from mongo and the alse save it in local store

@@ -6,8 +6,8 @@ export const saveData = async (eventData) => {
   try {
     const formattedEvent = {
       title: eventData.title,
-      start: new Date(eventData.start).toISOString(), // Convert to ISO 8601
-      end: new Date(eventData.end).toISOString()
+      start: new Date(eventData.start), // Convert to ISO 8601
+      end: new Date(eventData.end)
     };
     const response = await axios.post(`${API_URL}/save`, formattedEvent);
     return response.data;
