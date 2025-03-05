@@ -3,6 +3,7 @@ import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import {getData,saveData} from "../api_helper.js"
+import { Modal } from "./model.jsx";
 
 moment.locale("en-GB");
 // CALENDER CONFIGURATION
@@ -11,6 +12,8 @@ const localizer = momentLocalizer(moment);
 export default function ReactBigCalendar() {
   // Store the calender events in the state
   const [eventsData, setEventsData] = useState([]);
+  const [modalopen,setModalOpen]=useState(false)
+  const [selectedSlot, setSelectedSlot]=useState(null);
 
 
   // save the event in the local store
@@ -41,21 +44,28 @@ export default function ReactBigCalendar() {
   },[])
 
   const handleSelect = ({ start, end }) => {
-    const title = window.prompt("New Event name");
+
+    setSelectedSlot({start,end})
+    setModalOpen(true)
+     
+  };
+
+  const handleSave=(title)=>{
     if (title){
       const newEvent = {
         id: Date.now(), // Ensure a unique ID
         title,
-        start,
-        end
+        start: selectedSlot.start,  
+        end: selectedSlot.end,      
       };
       const updateEvent=[...eventsData,newEvent]
       setEventsData(updateEvent);
       saveData(newEvent)
       saveToLocalStorage(updateEvent);
     }
-     
   };
+
+ 
   return (
     <div className="App">
       <Calendar
@@ -69,6 +79,12 @@ export default function ReactBigCalendar() {
         onSelectEvent={(event) => alert(event.title)}
         onSelectSlot={handleSelect}
       />
+      <Modal isOpen={modalopen} 
+      onclose ={()=>setModalOpen(false)}
+      onsave ={handleSave}
+      />
+
     </div>
+
   );
 }
