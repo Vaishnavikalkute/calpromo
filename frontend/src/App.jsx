@@ -1,6 +1,6 @@
 
 import ReactBigCalendar from "./components/reactbigcalender";
-// import './index.css'; // Ensure this is included
+import './index.css'; // Ensure this is included
 
 export default function App() {
   return (
